@@ -20,6 +20,7 @@ public class Recipes {
     @SerializedName("summary")
     private String summary;
 
+
     public Recipes() {
     }
 

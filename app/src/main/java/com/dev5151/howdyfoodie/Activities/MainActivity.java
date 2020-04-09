@@ -3,6 +3,8 @@ package com.dev5151.howdyfoodie.Activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -11,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.dev5151.howdyfoodie.Adapters.RecipeAdapter;
 import com.dev5151.howdyfoodie.FoodViewModel;
 import com.dev5151.howdyfoodie.Interfaces.FoodDao;
 import com.dev5151.howdyfoodie.R;
@@ -25,19 +28,23 @@ public class MainActivity extends AppCompatActivity {
     private FoodViewModel foodViewModel;
     List<Recipes> recipes;
     public FoodDao foodDao;
+    RecipeAdapter recipeAdapter;
+    private RecyclerView recyclerView;
 
     @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
 
-            foodViewModel = new ViewModelProvider(this).get(FoodViewModel.class);
-            recipes = new ArrayList<>();
+        foodViewModel = new ViewModelProvider(this).get(FoodViewModel.class);
+        recipes = new ArrayList<>();
+        recyclerView = findViewById(R.id.recyclerView);
 
-            setupNetworkListener();
 
-        }
+        setupNetworkListener();
+
+    }
 
     private void getRecipesFromServer() {
         foodViewModel.getResponseModelLiveData().observe(MainActivity.this, new Observer<ResponseModel>() {
@@ -48,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
                 recipes.addAll(recipeList);
                 foodViewModel.deleteAllRecipes();
                 foodViewModel.insertAll(recipes);
+
+                setRecipeAdapter(recipes);
             }
 
         });
@@ -58,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Recipes> recipesList) {
                 recipes.addAll(recipesList);
+
+                setRecipeAdapter(recipes);
             }
         });
     }
@@ -102,5 +113,11 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             cm.registerDefaultNetworkCallback(networkCallback);
         }
+    }
+
+    private void setRecipeAdapter(List<Recipes> recipeList) {
+        recipeAdapter = new RecipeAdapter(recipeList);
+        recyclerView.setAdapter(recipeAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
     }
 }
