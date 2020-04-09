@@ -2,6 +2,7 @@ package com.dev5151.howdyfoodie.Interfaces;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -20,4 +21,7 @@ public interface FoodDao {
 
     @Query("SELECT * FROM `RECIPE TABLE`")
     LiveData<List<Recipes>> getAllRecipes();
+
+    @Query("DELETE FROM `Recipe Table`")
+    void deleteAllRecipes();
 }

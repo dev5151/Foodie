@@ -12,14 +12,14 @@ import java.util.List;
 
 public class FoodDBRepository {
     private FoodDao foodDao;
-   LiveData <List<Recipes>> allRecipes;
+    LiveData<List<Recipes>> allRecipes;
     Application application;
 
     public FoodDBRepository(Application application) {
         FoodDatabase foodDatabase = FoodDatabase.getInstance(application);
         foodDao = foodDatabase.foodDao();
         allRecipes = foodDao.getAllRecipes();
-        this.application=application;
+        this.application = application;
     }
 
     public LiveData<List<Recipes>> getAllRecipes() {
@@ -29,6 +29,11 @@ public class FoodDBRepository {
     public void insertRecipes(List<Recipes> recipesList) {
         new insertAsyncTask(foodDao).execute(recipesList);
     }
+
+    public void deleteAllRecipes() {
+        new DeleteAllFoodAsyncTask(foodDao).execute();
+    }
+
 
     private static class insertAsyncTask extends AsyncTask<List<Recipes>, Void, Void> {
 
@@ -44,4 +49,19 @@ public class FoodDBRepository {
             return null;
         }
     }
+
+    private static class DeleteAllFoodAsyncTask extends AsyncTask<Void, Void, Void> {
+        private FoodDao foodDao;
+
+        public DeleteAllFoodAsyncTask(FoodDao foodDao) {
+            this.foodDao = foodDao;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            foodDao.deleteAllRecipes();
+            return null;
+        }
+    }
+
 }
