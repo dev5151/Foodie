@@ -12,7 +12,10 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import com.dev5151.howdyfoodie.Adapters.RecipeAdapter;
 import com.dev5151.howdyfoodie.FoodViewModel;
 import com.dev5151.howdyfoodie.Interfaces.FoodApi;
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     FoodApi foodApi;
     ItemClickListener itemClickListener;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         foodViewModel = new ViewModelProvider(this).get(FoodViewModel.class);
         recipes = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
+        progressBar = findViewById(R.id.progress_bar);
 
         setupNetworkListener();
 
@@ -58,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 recipes.addAll(recipeList);
                 foodViewModel.deleteAllRecipes();
                 foodViewModel.insertAll(recipes);
-
+                progressBar.setVisibility(View.INVISIBLE);
                 setRecipeAdapter(recipes);
             }
 
