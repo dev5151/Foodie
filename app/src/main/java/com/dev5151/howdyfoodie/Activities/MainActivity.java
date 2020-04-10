@@ -7,15 +7,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
-
 import com.dev5151.howdyfoodie.Adapters.RecipeAdapter;
 import com.dev5151.howdyfoodie.FoodViewModel;
+import com.dev5151.howdyfoodie.Interfaces.FoodApi;
 import com.dev5151.howdyfoodie.Interfaces.FoodDao;
+import com.dev5151.howdyfoodie.Interfaces.ItemClickListener;
 import com.dev5151.howdyfoodie.R;
 import com.dev5151.howdyfoodie.Models.Recipes;
 import com.dev5151.howdyfoodie.Models.ResponseModel;
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     public FoodDao foodDao;
     RecipeAdapter recipeAdapter;
     private RecyclerView recyclerView;
+    FoodApi foodApi;
+    ItemClickListener itemClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         foodViewModel = new ViewModelProvider(this).get(FoodViewModel.class);
         recipes = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
-
 
         setupNetworkListener();
 
@@ -116,8 +119,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setRecipeAdapter(List<Recipes> recipeList) {
-        recipeAdapter = new RecipeAdapter(recipeList);
+        itemClickListener = (Recipes recipe) -> {
+            Intent intent = new Intent(MainActivity.this, RecipeActivity.class);
+            intent.putExtra("title", recipe.getId());
+            intent.putExtra("image", recipe.getImage());
+            intent.putExtra("summary", recipe.getSummary());
+            intent.putExtra("recipe", recipe.getInstructions());
+
+
+            startActivity(intent);
+        };
+        recipeAdapter = new RecipeAdapter(recipeList, itemClickListener);
         recyclerView.setAdapter(recipeAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
     }
+
+
 }

@@ -1,6 +1,4 @@
 package com.dev5151.howdyfoodie.Adapters;
-
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +16,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.dev5151.howdyfoodie.Interfaces.ItemClickListener;
 import com.dev5151.howdyfoodie.Models.Recipes;
 import com.dev5151.howdyfoodie.R;
 
@@ -26,10 +25,13 @@ import java.util.List;
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
     private List<Recipes> recipeList;
+    private ItemClickListener itemClickListener;
 
-    public RecipeAdapter(List<Recipes> recipeList) {
+    public RecipeAdapter(List<Recipes> recipeList, ItemClickListener itemClickListener) {
         this.recipeList = recipeList;
+        this.itemClickListener = itemClickListener;
     }
+
 
     @NonNull
     @Override
@@ -55,6 +57,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 return false;
             }
         }).into(holder.image);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                itemClickListener.onClick(recipes);
+            }
+        });
     }
 
     @Override
@@ -76,6 +85,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             title = itemView.findViewById(R.id.tvTitle);
             time = itemView.findViewById(R.id.tvTime);
             progressBar = itemView.findViewById(R.id.progress_bar);
+
 
         }
     }
